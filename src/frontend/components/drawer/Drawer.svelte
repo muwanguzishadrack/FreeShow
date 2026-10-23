@@ -240,6 +240,7 @@
     $: proLayout = $special.proLayout !== false
     $: tabs = keysToID(drawerTabs).filter((tab) => !proLayout || tab.id !== "shows")
     $: if (proLayout && $activeDrawerTab === "shows") activeDrawerTab.set("media")
+    $: proMediaBin = proLayout && $activeDrawerTab === "media"
 
     let searchActive = false
     $: if (searchActive) {
@@ -324,15 +325,20 @@
     </div>
 
     <div class="content">
-        <Resizeable id="leftPanelDrawer">
-            <Navigation id={$activeDrawerTab} />
-        </Resizeable>
+        <!-- ProPresenter layout: media folders live in the left column's MEDIA section -->
+        {#if !proMediaBin}
+            <Resizeable id="leftPanelDrawer">
+                <Navigation id={$activeDrawerTab} />
+            </Resizeable>
+        {/if}
         <Content id={$activeDrawerTab} bind:searchValue bind:firstMatch />
-        <Resizeable id="rightPanelDrawer" let:width side="right">
-            <div class="right" class:row={width > DEFAULT_WIDTH * 1.8}>
-                <Info id={$activeDrawerTab} />
-            </div>
-        </Resizeable>
+        {#if !proMediaBin}
+            <Resizeable id="rightPanelDrawer" let:width side="right">
+                <div class="right" class:row={width > DEFAULT_WIDTH * 1.8}>
+                    <Info id={$activeDrawerTab} />
+                </div>
+            </Resizeable>
+        {/if}
     </div>
 </section>
 

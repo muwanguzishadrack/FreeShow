@@ -1925,6 +1925,8 @@
         "type_ppt": "PowerPoint",
         "back_to_media": "Back to Media",
         "back_to_slides": "Back to slides",
-        "bible_search": "Search a reference or text, e.g. John 3:16"
+        "bible_search": "Search a reference or text, e.g. John 3:16",
+        "playlist": "Playlist",
+        "new_library": "New library"
     }
 }
