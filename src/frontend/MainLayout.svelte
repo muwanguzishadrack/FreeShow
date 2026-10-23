@@ -13,6 +13,8 @@
     import ProSidebar from "./components/show/ProSidebar.svelte"
     import Show from "./components/show/Show.svelte"
     import ShowTools from "./components/show/ShowTools.svelte"
+    import ProTools from "./components/show/ProTools.svelte"
+    import ProOutputBar from "./components/output/preview/ProOutputBar.svelte"
     import StageLayouts from "./components/stage/StageLayouts.svelte"
     import Resizeable from "./components/system/Resizeable.svelte"
     import Timeline from "./components/timeline/Timeline.svelte"
@@ -89,7 +91,10 @@
         <Resizeable id="rightPanel" let:width side="right">
             <div class="right" class:row={width > DEFAULT_WIDTH * 1.8}>
                 <Preview />
-                {#if page === "show"}
+                {#if page === "show" && proLayout && !$focusMode}
+                    <ProOutputBar />
+                    <ProTools />
+                {:else if page === "show"}
                     {#if $activeShow && ($activeShow.type === "show" || $activeShow.type === undefined) && !$focusMode}
                         <ShowTools />
                     {/if}

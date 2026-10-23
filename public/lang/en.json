@@ -1899,6 +1899,20 @@
         "items": "{count} items",
         "filter": "Filter",
         "item": "{count} item",
-        "arrangement": "Arrangement"
+        "arrangement": "Arrangement",
+        "timers": "Timers",
+        "layer_media": "Media",
+        "layer_slide": "Slide",
+        "layer_props": "Props",
+        "layer_audio": "Audio",
+        "layer_timer": "Timer",
+        "clear_to_logo": "Clear To Logo",
+        "clear_to_logo_tip": "Clear everything and show the logo",
+        "choose_logo": "Choose a logo in Settings > General first",
+        "stage_only": "Stage Only",
+        "stage_only_tip": "Hide slides on audience screens; stage screens still show them",
+        "advance": "Advance",
+        "advance_tip": "Let slide timers advance automatically",
+        "logo": "Logo for Clear To Logo"
     }
 }

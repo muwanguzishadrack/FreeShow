@@ -3,8 +3,10 @@
     import { getLanguageList, setLanguage, translateText } from "../../../utils/language"
     import { isGroupHidden } from "../../../utils/profile"
     import { sortByName } from "../../helpers/array"
+    import { mediaExtensions } from "../../../values/extensions"
     import Title from "../../input/Title.svelte"
     import MaterialDropdown from "../../inputs/MaterialDropdown.svelte"
+    import MaterialFilePicker from "../../inputs/MaterialFilePicker.svelte"
     import MaterialPopupButton from "../../inputs/MaterialPopupButton.svelte"
     import MaterialToggleSwitch from "../../inputs/MaterialToggleSwitch.svelte"
 
@@ -42,6 +44,9 @@
 <MaterialDropdown label="settings.language" value={$language} options={getLanguageList()} on:change={(e) => setLanguage(e.detail)} flags />
 <MaterialToggleSwitch label="settings.use24hClock" checked={$timeFormat === "24"} on:change={(e) => timeFormat.set(e.detail ? "24" : "12")} />
 <MaterialToggleSwitch label="pro_layout.setting" title="pro_layout.setting_tip" checked={$special.proLayout !== false} defaultValue={true} on:change={(e) => updateSpecial(e.detail, "proLayout", true)} />
+{#if $special.proLayout !== false}
+    <MaterialFilePicker label="pro_layout.logo" value={$special.proLogo || ""} filter={{ name: "Media files", extensions: mediaExtensions }} on:change={(e) => updateSpecial(e.detail, "proLogo")} allowEmpty />
+{/if}
 <MaterialToggleSwitch label="settings.disable_labels" checked={$labelsDisabled} defaultValue={false} on:change={(e) => labelsDisabled.set(e.detail)} />
 <MaterialToggleSwitch label="settings.full_colors" checked={$fullColors} defaultValue={false} on:change={(e) => fullColors.set(e.detail)} />
 

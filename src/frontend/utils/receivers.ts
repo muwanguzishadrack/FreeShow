@@ -73,7 +73,7 @@ import { sendInitialOutputData } from "./listeners"
 import { receive, send } from "./request"
 import { closeApp, save } from "./save"
 import { client } from "./sendData"
-import { previewShortcuts } from "./shortcuts"
+import { getPreviewShortcut } from "./proShortcuts"
 import { restartOutputs } from "./updateSettings"
 
 let mainReceiversInitialized = false
@@ -166,9 +166,8 @@ const receiveOUTPUTasMAIN: any = {
         activePopup.set("alert")
     },
     MAIN_SHORTCUT: (data: { key: string }) => {
-        if (previewShortcuts[data.key]) {
-            previewShortcuts[data.key]({ ...data, preventDefault: () => "" })
-        }
+        const previewShortcut = getPreviewShortcut(data.key)
+        if (previewShortcut) previewShortcut({ ...data, preventDefault: () => "" })
     },
     MAIN_SHOWS_DATA: () => send(OUTPUT, ["SHOWS_DATA"], get(shows)),
 

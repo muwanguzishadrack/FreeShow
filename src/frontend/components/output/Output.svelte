@@ -71,11 +71,13 @@
     // currentOutput is set to refresh state when changed in preview
     let cachedLayersStr = ""
     $: if (currentOutput) {
-        const newLayersStr = JSON.stringify(currentStyle.layers || defaultLayers)
+        const stageOnly = !!currentOutput.slideStageOnly && !currentOutput.stageOutput
+        const newLayersStr = JSON.stringify([currentStyle.layers || defaultLayers, stageOnly])
         if (newLayersStr !== cachedLayersStr) {
             cachedLayersStr = newLayersStr
             layers = clone(Array.isArray(currentStyle.layers) ? currentStyle.layers : defaultLayers)
             if (!Array.isArray(layers)) layers = []
+            if (stageOnly) layers = layers.filter((layer) => layer !== "slide")
         }
     }
     let cachedOutStr = ""

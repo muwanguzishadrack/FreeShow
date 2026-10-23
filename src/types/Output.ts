@@ -8,6 +8,7 @@ export interface Outputs {
 export interface Output {
     id?: string
     hideFromPreview?: boolean
+    slideStageOnly?: boolean // ProPresenter layout "Stage Only": hide the slide layer here, stage screens still show it
     stageOutput?: string
     enabled: boolean
     active: boolean

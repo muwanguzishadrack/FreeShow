@@ -7,7 +7,7 @@ export const PRO_LABELS: { [section: string]: { [key: string]: string } } = {
     remote: { projects: "Playlists", project: "Playlist", shows: "Presentations" },
     guide_title: { projects: "Playlists", project: "Playlist" },
     formats: { project: "Playlist", overlay: "Prop", template: "Theme" },
-    new: { project: "New playlist", show: "New presentation" },
+    new: { project: "New playlist", show: "New presentation", overlay: "New prop", template: "New theme" },
     tabs: { shows: "Presentations", overlays: "Props", templates: "Themes", functions: "Macros" },
     preview: { overlays: "Props" },
     popup: { show: "New presentation" },

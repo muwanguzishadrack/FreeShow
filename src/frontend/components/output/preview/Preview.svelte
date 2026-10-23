@@ -2,7 +2,8 @@
     import { actions, activePage, activePopup, activeShow, activeTimers, contextActive, groups, guideActive, outLocked, outputs, overlayTimers, playingAudio, playingMetronome, resized, slideTimers, special } from "../../../stores"
     import { DEFAULT_WIDTH, isDarkTheme } from "../../../utils/common"
     import { formatSearch } from "../../../utils/search"
-    import { getNormalizedKey, previewCtrlShortcuts, previewShortcuts } from "../../../utils/shortcuts"
+    import { getPreviewShortcut } from "../../../utils/proShortcuts"
+    import { getNormalizedKey, previewCtrlShortcuts } from "../../../utils/shortcuts"
     import { runAction } from "../../actions/actions"
     import AudioMeter from "../../drawer/audio/AudioMeter.svelte"
     import { getSlideText } from "../../edit/scripts/textStyle"
@@ -111,8 +112,9 @@
             }
         }
 
-        if (previewShortcuts[e.key]) {
-            if (previewShortcuts[e.key](e)) e.preventDefault()
+        const previewShortcut = getPreviewShortcut(e.key)
+        if (previewShortcut) {
+            if (previewShortcut(e)) e.preventDefault()
             return
         }
     }
@@ -215,6 +217,8 @@
     $: Object.entries($outputs).forEach(([id, output]) => {
         if ((Object.keys($outputs)?.length > 1 && !output.enabled) || output.stageOutput) return
         if (!output.out?.transition || $slideTimers[id]?.timer) return
+        // ProPresenter layout "Advance" toggle
+        if ($special.proAdvanceDisabled) return
 
         const data = output.out.transition
         newSlideTimer(id, data.duration, data.folderPath || "")

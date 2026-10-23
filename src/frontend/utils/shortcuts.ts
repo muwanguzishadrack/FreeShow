@@ -30,6 +30,7 @@ import { getAccess } from "./profile"
 import { triggerPopupSubmit } from "./popup"
 import { send } from "./request"
 import { save } from "./save"
+import { handleProShortcut } from "./proShortcuts"
 import { isTypingTarget } from "./shortcutsHelper"
 
 const menus: TopViews[] = ["show", "edit", "stage", "draw", "settings"]
@@ -155,7 +156,7 @@ export function keydown(e: KeyboardEvent) {
         if (e.key === "Escape" && !contentDisplayed) return hideDisplay()
 
         // allow custom shortcuts through main display (could be useful in some cases when you need output over the main app)
-        const allowThroughWindow = ["Escape", "ArrowRight", "ArrowLeft", " ", "PageDown", "PageUp", "Home", "End", ".", "F1", "F2", "F3", "F4", "F5"]
+        const allowThroughWindow = ["Escape", "ArrowRight", "ArrowLeft", " ", "PageDown", "PageUp", "Home", "End", ".", "F1", "F2", "F3", "F4", "F5", "F12"]
         if (allowThroughWindow.includes(e.key)) send(OUTPUT, ["MAIN_SHORTCUT"], { key: e.key, ctrlKey: e.ctrlKey, metaKey: e.metaKey, altKey: e.altKey })
 
         return
@@ -163,6 +164,7 @@ export function keydown(e: KeyboardEvent) {
 
     if (isComposing(e)) return
     if (get(guideActive)) return
+    if (handleProShortcut(e)) return
 
     // clicking e.g. "Show" tab button will focus that making number tab change not work
     if (document.activeElement?.nodeName === "BUTTON") (document.activeElement as any).blur()
