@@ -24,6 +24,7 @@
     import Show from "../tools/Show.svelte"
     import TimerControls from "../tools/TimerControls.svelte"
     import ClearButtons from "./ClearButtons.svelte"
+    import ProLookSelector from "./ProLookSelector.svelte"
     import MultiOutputs from "./MultiOutputs.svelte"
     import IcecastStatus from "./IcecastStatus.svelte"
     import SpotifyController from "./SpotifyController.svelte"
@@ -251,19 +252,29 @@
     const light = !isDarkTheme()
     $: isOptimized = $special.optimizedMode
     $: isSplitted = $resized.rightPanel > DEFAULT_WIDTH * 1.8
+
+    // ProPresenter layout: layer strip beside the preview, Look + media transport below it
+    $: proLayout = $special.proLayout !== false
+    $: proStrip = proLayout && $activePage === "show" && enablePreview
+    $: backgroundPlaying = !!currentBgOutput?.out?.background
 </script>
 
 <svelte:window on:keydown={keydown} />
 
 <div id="previewArea" class="main">
     {#if enablePreview}
-        <div class="top">
+        <div class="top" class:withStrip={proStrip}>
             <MaterialButton class="hide" icon="hide" style="z-index: 2;" title="preview._hide_preview" on:click={() => (enablePreview = false)} />
             <!-- disable before hiding: disableTransitions={!enablePreview} -->
             <MultiOutputs />
             <div class="preview-meter">
                 <AudioMeter channelId="main" preview />
             </div>
+            {#if proStrip}
+                <div class="proStrip">
+                    <ClearButtons vertical bind:autoChange activeClear={updatedActiveClear} on:update={(e) => (activeClear = e.detail)} />
+                </div>
+            {/if}
         </div>
     {:else}
         <Button on:click={() => (enablePreview = true)} style="width: 100%;" center dark>
@@ -280,7 +291,14 @@
 
     {#if $activePage === "show"}
         <div class="section clear-btns" style="margin-top: 2px;">
-            <ClearButtons bind:autoChange activeClear={updatedActiveClear} on:update={(e) => (activeClear = e.detail)} />
+            {#if proStrip}
+                <ProLookSelector />
+                {#if backgroundPlaying && updatedActiveClear !== "background"}
+                    <MediaControls currentOutput={currentBgOutput} outputId={backgroundOutputId} />
+                {/if}
+            {:else}
+                <ClearButtons bind:autoChange activeClear={updatedActiveClear} on:update={(e) => (activeClear = e.detail)} />
+            {/if}
 
             {#if updatedActiveClear === "background"}
                 <MediaControls currentOutput={currentBgOutput} outputId={backgroundOutputId} />
@@ -318,6 +336,12 @@
         display: flex;
         position: relative;
     }
+
+    .proStrip {
+        display: flex;
+        flex-shrink: 0;
+        border-inline-start: 1px solid var(--primary-lighter);
+    }
     /* button {
     background-color: inherit;
     color: inherit;
@@ -343,6 +367,10 @@
     }
     .top:hover > :global(.hide:not(.contained):not(.isActive):not(:disabled)) {
         opacity: 1;
+    }
+    /* keep "Hide preview" clear of the layer strip */
+    .top.withStrip :global(.hide:not(.contained):not(.isActive):not(:disabled)) {
+        inset-inline-end: 60px;
     }
 
     .section {

@@ -1927,6 +1927,10 @@
         "back_to_slides": "Back to slides",
         "bible_search": "Search a reference or text, e.g. John 3:16",
         "playlist": "Playlist",
-        "new_library": "New library"
+        "new_library": "New library",
+        "look": "Look",
+        "look_default": "Default",
+        "look_mixed": "Mixed",
+        "look_tip": "Output style used on all audience screens"
     }
 }

@@ -13,6 +13,8 @@
 
     export let autoChange: any
     export let activeClear: any
+    // ProPresenter layout: icon-only vertical strip beside the preview
+    export let vertical = false
 
     // ProPresenter layout: show layer names under the clear buttons
     $: proLayout = $special.proLayout !== false
@@ -114,7 +116,7 @@
     }
 </script>
 
-<div class="clear" class:pro={proLayout} data-title={translateText("guide_description.output_clear", $dictionary)}>
+<div class="clear" class:pro={proLayout} class:vertical data-title={translateText("guide_description.output_clear", $dictionary)}>
     {#if !sceneCleared}
         <span class="group" style="border-bottom: 1px solid var(--primary-darker);">
             <div class="combinedButton">
@@ -130,13 +132,13 @@
         {#if allCleared && $outputCache && $outputCache?.slide?.type !== "ppt"}
             <MaterialButton style="padding: 0.42em 0.8em;" class="clearAll" disabled={$outLocked || !enableRestore} title="preview.restore_output" on:click={restoreOutput}>
                 <Icon id="reset" size={1.2} white />
-                {#if !$labelsDisabled}<T id="preview.restore_output" />{/if}
+                {#if !$labelsDisabled && !vertical}<T id="preview.restore_output" />{/if}
             </MaterialButton>
         {:else}
             <MaterialButton style="padding: 0.42em 0.8em;" class="clearAll" disabled={$outLocked || allCleared} title="clear.all [esc]" on:click={() => clearAll(true)} red>
                 {#if $isTimelinePlaying}<span class="faded" data-title={translateText("popup.timeline")}><Icon id="timeline" white /></span>{/if}
                 <Icon id="clear" size={1.2} white />
-                {#if !$labelsDisabled}<T id="clear.all" />{/if}
+                {#if !$labelsDisabled && !vertical}<T id="clear.all" />{/if}
             </MaterialButton>
         {/if}
     </span>
@@ -146,7 +148,7 @@
             <div class="combinedButton">
                 <MaterialButton style="padding: 0.3em 0.6em;{styleBackground ? 'opacity: 0.5;cursor: default;' : ''}" disabled={($outLocked || backgroundCleared) && !styleBackground} title={$outLocked || backgroundCleared ? "" : "clear.background [F1]"} on:click={() => clear("background")} red>
                     <Icon id="image" size={1.2} white />
-                    {#if proLayout}<span class="layerLabel">{translateText("pro_layout.layer_media", $dictionary)}</span>{/if}
+                    {#if proLayout && !vertical}<span class="layerLabel">{translateText("pro_layout.layer_media", $dictionary)}</span>{/if}
                 </MaterialButton>
                 {#if !allCleared}
                     <MaterialButton style="padding: {activeClear === 'background' ? 0 : 2}px !important;min-height: 15px;border-left: 0 !important;" isActive={activeClear === "background"} disabled={backgroundCleared} on:click={() => openPreview("background")} title="preview.background">
@@ -164,7 +166,7 @@
                     <!-- PDFs are visually the background layer as it is toggled by the style "Background" layer, but it behaves as a slide in the code -->
                     <!-- display recording icon here if a slide recoring is playing -->
                     <Icon id={isScripture ? "scripture" : outputContent?.type === "pdf" ? "image" : "slide"} size={1.2} white />
-                    {#if proLayout}<span class="layerLabel">{translateText("pro_layout.layer_slide", $dictionary)}</span>{/if}
+                    {#if proLayout && !vertical}<span class="layerLabel">{translateText("pro_layout.layer_slide", $dictionary)}</span>{/if}
                 </MaterialButton>
                 {#if !allCleared}
                     <MaterialButton style="padding: {activeClear === 'slide' ? 0 : 2}px !important;min-height: 15px;" isActive={activeClear === "slide"} disabled={slideCleared} on:click={() => openPreview("slide")} title="preview.slide">
@@ -179,7 +181,7 @@
         <div class="combinedButton">
             <MaterialButton style="padding: 0.3em 0.6em;{lockedOverlay ? 'opacity: 0.5;cursor: default;' : ''}" disabled={$outLocked || (overlayCleared && effectsCleared)} title={lockedOverlay ? "" : "clear.overlays [F3]"} on:click={() => clear("overlays")} red>
                 <Icon id="overlays" size={1.2} white />
-                {#if proLayout}<span class="layerLabel">{translateText("pro_layout.layer_props", $dictionary)}</span>{/if}
+                {#if proLayout && !vertical}<span class="layerLabel">{translateText("pro_layout.layer_props", $dictionary)}</span>{/if}
             </MaterialButton>
             {#if !allCleared}
                 <MaterialButton style="padding: {activeClear === 'overlays' ? 0 : 2}px !important;min-height: 15px;" isActive={activeClear === "overlays"} disabled={overlayCleared} on:click={() => openPreview("overlays")} title="preview.overlays">
@@ -193,7 +195,7 @@
         <div class="combinedButton">
             <MaterialButton style="padding: 0.3em 0.6em;" disabled={$outLocked || audioCleared} title="clear.audio [F4]" on:click={() => clear("audio")} red>
                 <Icon id={audioIcon} size={1.2} white />
-                {#if proLayout}<span class="layerLabel">{translateText("pro_layout.layer_audio", $dictionary)}</span>{/if}
+                {#if proLayout && !vertical}<span class="layerLabel">{translateText("pro_layout.layer_audio", $dictionary)}</span>{/if}
             </MaterialButton>
             {#if !allCleared}
                 <MaterialButton style="padding: {activeClear === 'audio' ? 0 : 2}px !important;min-height: 15px;" isActive={activeClear === "audio"} disabled={audioCleared} on:click={() => openPreview("audio")} title="preview.audio">
@@ -208,7 +210,7 @@
             <div class="combinedButton">
                 <MaterialButton style="padding: 0.3em 0.6em;{isTimer ? 'opacity: 0.9;' : ''}" disabled={$outLocked || (slideTimerCleared && activeClear !== "nextTimer")} title="{isTimer ? 'actions.stop_timers' : `clear.${Object.keys($overlayTimers).length ? 'timer' : 'nextTimer'}`}{presentationControllersKeysDisabled() ? ' [F5]' : ''}" on:click={() => (isTimer ? activeTimers.set([]) : clear("nextTimer"))} red>
                     <Icon id={isTimer ? "timer" : "clock"} size={1.2} white />
-                    {#if proLayout}<span class="layerLabel">{translateText("pro_layout.layer_timer", $dictionary)}</span>{/if}
+                    {#if proLayout && !vertical}<span class="layerLabel">{translateText("pro_layout.layer_timer", $dictionary)}</span>{/if}
                 </MaterialButton>
                 {#if !allCleared}
                     <MaterialButton style="padding: 2px !important;min-height: 15px;border-right: 0 !important;" isActive={activeClear === "nextTimer"} disabled={slideTimerCleared && activeClear !== "nextTimer"} on:click={() => openPreview("nextTimer")} title="preview.nextTimer">
@@ -265,6 +267,29 @@
         flex-direction: column;
         gap: 2px;
     }
+    /* vertical strip: one icon per layer, Clear All on top */
+    .clear.vertical {
+        height: 100%;
+        width: 44px;
+        background-color: var(--primary-darkest);
+    }
+    .clear.vertical .group {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-items: stretch;
+    }
+    .clear.vertical :global(button) {
+        padding: 0.45em 0 !important;
+        justify-content: center;
+    }
+    .clear.vertical :global(.clearAll) {
+        border-radius: 0;
+    }
+    /* hide the small per-layer preview toggles in the strip */
+    .clear.vertical .combinedButton :global(button:not(:first-child)) {
+        display: none;
+    }
+
     .layerLabel {
         font-size: 0.7em;
         font-weight: normal;
