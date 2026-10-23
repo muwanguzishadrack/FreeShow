@@ -4,10 +4,32 @@
     import { activeDrawerTab, activePage, dictionary, drawer, drawerOpenedInEdit, editMode, quickSearchActive } from "../../stores"
     import { openEditor, openTool, showSlides, toggleBible, toggleBin } from "../../utils/proActions"
     import { translateText } from "../../utils/language"
+    import { portal } from "../../utils/portal"
     import Icon from "../helpers/Icon.svelte"
     import { proCenterView, proToolsTab } from "../show/proToolsState"
+    import ProThemePopover from "./ProThemePopover.svelte"
 
     export let editDisabled = false
+
+    let themeOpen = false
+    let moreOpen = false
+    let moreLeft = 0
+
+    // the More menu opens under its button
+    function openMore() {
+        const button = document.querySelector<HTMLElement>(".toolbar .item.more")
+        const rect = button?.getBoundingClientRect()
+        moreLeft = rect ? rect.left + rect.width / 2 : window.innerWidth / 2
+        moreOpen = !moreOpen
+    }
+
+    // "More": less common views, like ProPresenter's More menu
+    $: moreItems = [
+        { id: "calendar", icon: "calendar", label: "tabs.calendar", action: () => toggleBin("calendar") },
+        { id: "stage", icon: "stage", label: "pro_layout.stage_editor", action: () => activePage.set("stage") },
+        { id: "draw", icon: "draw", label: "menu.draw", action: () => activePage.set("draw") },
+        { id: "settings", icon: "settings", label: "menu.settings", action: () => activePage.set("settings") }
+    ]
 
     type ToolbarItem = { id: string; icon: string; label: string; active?: boolean; disabled?: boolean; action: () => void }
 
@@ -23,14 +45,15 @@
 
     $: left = [
         { id: "search", icon: "search", label: "pro_layout.search", action: () => quickSearchActive.set(true) },
-        { id: "theme", icon: "templates", label: "pro_layout.theme", active: activeBin === "templates", action: () => toggleBin("templates") }
+        { id: "theme", icon: "templates", label: "pro_layout.theme", active: themeOpen, action: () => (themeOpen = !themeOpen) }
     ] as ToolbarItem[]
 
     $: modes = [
         { id: "show", icon: "show", label: "pro_layout.show", active: showPage && !bibleOpen, action: showSlides },
         { id: "edit", icon: "edit", label: "pro_layout.edit", active: $activePage === "edit" && $editMode !== "text_edit", disabled: editDisabled, action: () => edit("default") },
         { id: "reflow", icon: "text_edit", label: "pro_layout.reflow", active: $activePage === "edit" && $editMode === "text_edit", disabled: editDisabled, action: () => edit("text_edit") },
-        { id: "bible", icon: "scripture", label: "pro_layout.bible", active: bibleOpen, action: toggleBible }
+        { id: "bible", icon: "scripture", label: "pro_layout.bible", active: bibleOpen, action: toggleBible },
+        { id: "more", icon: "more", label: "pro_layout.more", active: moreOpen, action: openMore }
     ] as ToolbarItem[]
 
     $: panels = [
@@ -51,17 +74,39 @@
 
         <div class="group">
             {#each group as item}
-                <button class="item" class:active={item.active} disabled={item.disabled} data-title={translateText(item.label, $dictionary)} on:click={item.action}>
+                <button class="item {item.id}" class:active={item.active} disabled={item.disabled} data-title={translateText(item.label, $dictionary)} on:click={item.action}>
                     <span class="pill"><Icon id={item.icon} size={1.15} white /></span>
                     <span class="label">{translateText(item.label, $dictionary)}</span>
                 </button>
             {/each}
         </div>
     {/each}
+
+    {#if themeOpen}
+        <ProThemePopover on:close={() => (themeOpen = false)} />
+    {/if}
+
+    {#if moreOpen}
+        <div class="backdrop" role="none" use:portal on:click={() => (moreOpen = false)} />
+        <div class="moreMenu" use:portal style="left: {moreLeft}px;">
+            {#each moreItems as item}
+                <button
+                    on:click={() => {
+                        moreOpen = false
+                        item.action()
+                    }}
+                >
+                    <Icon id={item.icon} size={0.95} white />
+                    <span>{translateText(item.label, $dictionary)}</span>
+                </button>
+            {/each}
+        </div>
+    {/if}
 </div>
 
 <style>
     .toolbar {
+        position: relative;
         display: flex;
         align-items: center;
         height: 100%;
@@ -127,6 +172,44 @@
 
     .label {
         white-space: nowrap;
+    }
+
+    .backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 5000;
+    }
+    .moreMenu {
+        position: fixed;
+        top: 60px;
+        transform: translateX(-50%);
+        z-index: 5001;
+        display: flex;
+        flex-direction: column;
+        min-width: 180px;
+        padding: 4px;
+        background-color: var(--primary);
+        border: 1px solid var(--primary-lighter);
+        border-radius: 8px;
+        box-shadow: 0 8px 24px rgb(0 0 0 / 0.5);
+        -webkit-app-region: no-drag;
+    }
+    .moreMenu button {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 10px;
+        background: none;
+        border: none;
+        border-radius: 4px;
+        color: var(--text);
+        font-family: inherit;
+        font-size: 0.9em;
+        text-align: start;
+        cursor: pointer;
+    }
+    .moreMenu button:hover {
+        background-color: var(--hover);
     }
 
     @media screen and (max-width: 1000px) {

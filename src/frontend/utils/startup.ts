@@ -14,6 +14,7 @@ import { setupCloudSync } from "./cloudSync"
 import { wait, waitUntilValueIsDefined } from "./common"
 import { getDefaultElements } from "./createData"
 import { setLanguage, startProLabelsSync } from "./language"
+import { startProThemeSync } from "./proTheme"
 import { storeSubscriber } from "./listeners"
 import { autoOpenLastUsedProfile, openProfileByName } from "./profile"
 import { receiveOUTPUTasOUTPUT, remoteListen, setupMainReceivers } from "./receivers"
@@ -74,6 +75,7 @@ async function startupMain() {
     storeSubscriber()
     startSmartPlaylistSync()
     startProLabelsSync()
+    startProThemeSync()
     remoteListen()
 
     const hasProfiles = Object.keys(get(profiles)).filter((a) => a !== "admin").length > 0

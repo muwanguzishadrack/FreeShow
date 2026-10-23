@@ -1931,6 +1931,8 @@
         "look": "Look",
         "look_default": "Default",
         "look_mixed": "Mixed",
-        "look_tip": "Output style used on all audience screens"
+        "look_tip": "Output style used on all audience screens",
+        "more": "More",
+        "stage_editor": "Stage Editor"
     }
 }
