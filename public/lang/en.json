@@ -1880,5 +1880,24 @@
         "matches": "Matching shows",
         "convert_to_normal": "Convert to normal project",
         "tooltip": "Shows are added and removed automatically based on rules"
+    },
+    "pro_layout": {
+        "setting": "ProPresenter-style layout",
+        "setting_tip": "Library and playlist sidebar, media bin under the slides, and ProPresenter names (Playlists, Presentations, Props, Themes)",
+        "search": "Search",
+        "theme": "Theme",
+        "show": "Show",
+        "edit": "Edit",
+        "reflow": "Reflow",
+        "bible": "Bible",
+        "media": "Media",
+        "audio": "Audio",
+        "props": "Props",
+        "macros": "Macros",
+        "stage": "Stage",
+        "library": "Library",
+        "items": "{count} items",
+        "filter": "Filter",
+        "item": "{count} item"
     }
 }

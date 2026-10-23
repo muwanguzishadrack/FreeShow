@@ -10,6 +10,7 @@
     import Preview from "./components/output/preview/Preview.svelte"
     import SettingsTabs from "./components/settings/SettingsTabs.svelte"
     import Projects from "./components/show/Projects.svelte"
+    import ProSidebar from "./components/show/ProSidebar.svelte"
     import Show from "./components/show/Show.svelte"
     import ShowTools from "./components/show/ShowTools.svelte"
     import StageLayouts from "./components/stage/StageLayouts.svelte"
@@ -20,6 +21,8 @@
 
     $: page = $activePage
     $: isWindows = !$currentWindow && $os.platform === "win32"
+    // ProPresenter-style layout (library sidebar, media bin under the slides)
+    $: proLayout = $special.proLayout !== false
 
     let previousId = ""
     $: if ($activeShow?.id !== previousId) showOpened()
@@ -41,7 +44,11 @@
             <div class="left">
                 {#if page === "show"}
                     {#key $activeProfile}
-                        <Projects />
+                        {#if proLayout}
+                            <ProSidebar />
+                        {:else}
+                            <Projects />
+                        {/if}
                     {/key}
                 {:else if page === "edit"}
                     <Navigation />
@@ -55,21 +62,27 @@
             </div>
         </Resizeable>
 
-        <div class="center">
-            {#if page === "show"}
-                {#if $focusMode}
-                    <LazyLoad component={() => import("./components/show/focus/FocusMode.svelte")} show={$focusMode} />
-                {:else}
-                    <Show />
+        <div class="centerColumn">
+            <div class="center">
+                {#if page === "show"}
+                    {#if $focusMode}
+                        <LazyLoad component={() => import("./components/show/focus/FocusMode.svelte")} show={$focusMode} />
+                    {:else}
+                        <Show />
+                    {/if}
+                {:else if page === "edit"}
+                    <LazyLoad component={() => import("./components/edit/Editor.svelte")} show={page === "edit"} />
+                {:else if page === "draw"}
+                    <LazyLoad component={() => import("./components/draw/Slide.svelte")} show={page === "draw"} />
+                {:else if page === "settings"}
+                    <LazyLoad component={() => import("./components/settings/Settings.svelte")} show={page === "settings"} />
+                {:else if page === "stage"}
+                    <LazyLoad component={() => import("./components/stage/StageLayout.svelte")} show={page === "stage"} />
                 {/if}
-            {:else if page === "edit"}
-                <LazyLoad component={() => import("./components/edit/Editor.svelte")} show={page === "edit"} />
-            {:else if page === "draw"}
-                <LazyLoad component={() => import("./components/draw/Slide.svelte")} show={page === "draw"} />
-            {:else if page === "settings"}
-                <LazyLoad component={() => import("./components/settings/Settings.svelte")} show={page === "settings"} />
-            {:else if page === "stage"}
-                <LazyLoad component={() => import("./components/stage/StageLayout.svelte")} show={page === "stage"} />
+            </div>
+
+            {#if proLayout && $loaded && (page === "show" || page === "edit")}
+                <LazyLoad component={() => import("./components/drawer/Drawer.svelte")} show={$loaded && (page === "show" || page === "edit")} />
             {/if}
         </div>
 
@@ -115,7 +128,7 @@
         </Resizeable>
     {/if}
 
-    {#if $loaded && (page === "show" || page === "edit")}
+    {#if !proLayout && $loaded && (page === "show" || page === "edit")}
         <LazyLoad component={() => import("./components/drawer/Drawer.svelte")} show={$loaded && (page === "show" || page === "edit")} />
     {/if}
 
@@ -145,6 +158,14 @@
 
     .row {
         flex: 1;
+        overflow: hidden;
+    }
+
+    .centerColumn {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
         overflow: hidden;
     }
 

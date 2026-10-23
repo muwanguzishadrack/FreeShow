@@ -1,6 +1,6 @@
 <script lang="ts">
     import { slide } from "svelte/transition"
-    import { activeEdit, activePage, activeProfile, activeProject, activeShow, cloudUsers, dictionary, drawSettings, drawTool, os, outputDisplay, outputs, paintCache, profiles, saved, settingsTab, shows } from "../../stores"
+    import { activeEdit, activePage, activeProfile, activeProject, activeShow, cloudUsers, dictionary, drawSettings, drawTool, os, outputDisplay, outputs, paintCache, profiles, saved, settingsTab, shows, special } from "../../stores"
     import { getCloudUsers } from "../../utils/cloudSync"
     import { translateText } from "../../utils/language"
     import Icon from "../helpers/Icon.svelte"
@@ -8,9 +8,12 @@
     import T from "../helpers/T.svelte"
     import Button from "../inputs/Button.svelte"
     import TopButton from "../inputs/TopButton.svelte"
+    import ProToolbar from "./ProToolbar.svelte"
     import { DEFAULT_DISPLAY_NAME } from "../../utils/SocketHelper"
 
     export let isWindows = false
+
+    $: proLayout = $special.proLayout !== false
 
     $: show = $shows[$activeShow?.id || ""]
     $: showProfile = profile?.access.shows || {}
@@ -91,7 +94,7 @@
     </div>
 {/if}
 
-<div class="top" class:drag={!isWindows}>
+<div class="top" class:drag={!isWindows} class:proLayout>
     <!-- {#if !isWindows}
     <div class="dragZone" />
     {/if} -->
@@ -107,9 +110,13 @@
         </div> -->
     </span>
     <span>
-        <TopButton id="show" />
-        <TopButton id="edit" disabled={editDisabled} />
-        <TopButton id="stage" />
+        {#if proLayout}
+            <ProToolbar {editDisabled} />
+        {:else}
+            <TopButton id="show" />
+            <TopButton id="edit" disabled={editDisabled} />
+            <TopButton id="stage" />
+        {/if}
     </span>
     <span style="width: var(--navigation-width);justify-content: flex-end;">
         <TopButton id="draw" red={$drawTool === "fill" || ($drawTool === "zoom" && $drawSettings.zoom?.size !== 100) || !!($drawTool === "paint" && $paintCache?.length)} hideLabel />
@@ -173,6 +180,11 @@
     }
     .top span {
         display: flex;
+    }
+
+    .top.proLayout {
+        min-height: 56px;
+        height: 56px;
     }
 
     .top.drag {

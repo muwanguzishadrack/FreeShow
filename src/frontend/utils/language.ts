@@ -5,9 +5,10 @@ import { Main } from "../../types/IPC/Main"
 import type { Dictionary } from "../../types/Settings"
 import { sortByName } from "../components/helpers/array"
 import { sendMain } from "../IPC/main"
-import { dictionary, language, localeDirection } from "../stores"
+import { dictionary, language, localeDirection, special } from "../stores"
 import { isMainWindow } from "./common"
 import { languageFlags, languages, replace } from "./languageData"
+import { applyProLabels } from "./proLabels"
 import { send } from "./request"
 
 // https://medium.com/i18n-and-l10n-resources-for-developers/a-step-by-step-guide-to-svelte-localization-with-svelte-i18n-v3-2c3ff0d645b8
@@ -61,6 +62,8 @@ function setLanguage(locale = "", init = false) {
             })
         }
 
+        rawMessages = { locale, messages }
+        messages = getDisplayDictionary(messages, locale)
         dictionary.set(messages)
         if (init || !isMainWindow()) return
 
@@ -115,4 +118,22 @@ export function getLanguageList() {
     options = options.map((a) => ({ ...a, prefix: languageFlags[a.value] || "" }))
 
     return options
+}
+
+// ProPresenter layout terminology
+
+let rawMessages: { locale: string; messages: Dictionary } | null = null
+let proLabelsApplied: boolean | null = null
+
+function getDisplayDictionary(messages: Dictionary, locale: string) {
+    proLabelsApplied = get(special).proLayout !== false
+    return proLabelsApplied ? applyProLabels(messages, locale) : messages
+}
+
+// re-apply labels when the layout setting changes
+export function startProLabelsSync() {
+    special.subscribe((a) => {
+        if (!rawMessages || proLabelsApplied === (a.proLayout !== false)) return
+        dictionary.set(getDisplayDictionary(rawMessages.messages, rawMessages.locale))
+    })
 }

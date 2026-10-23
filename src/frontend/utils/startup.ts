@@ -13,7 +13,7 @@ import { startTracking } from "./analytics"
 import { setupCloudSync } from "./cloudSync"
 import { wait, waitUntilValueIsDefined } from "./common"
 import { getDefaultElements } from "./createData"
-import { setLanguage } from "./language"
+import { setLanguage, startProLabelsSync } from "./language"
 import { storeSubscriber } from "./listeners"
 import { autoOpenLastUsedProfile, openProfileByName } from "./profile"
 import { receiveOUTPUTasOUTPUT, remoteListen, setupMainReceivers } from "./receivers"
@@ -73,6 +73,7 @@ async function startupMain() {
 
     storeSubscriber()
     startSmartPlaylistSync()
+    startProLabelsSync()
     remoteListen()
 
     const hasProfiles = Object.keys(get(profiles)).filter((a) => a !== "admin").length > 0
