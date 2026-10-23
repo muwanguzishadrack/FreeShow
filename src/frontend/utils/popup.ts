@@ -78,6 +78,7 @@ import SelectShow from "../components/main/popups/SelectShow.svelte"
 import SelectStageLayout from "../components/main/popups/SelectStageLayout.svelte"
 import SelectStyle from "../components/main/popups/SelectStyle.svelte"
 import SelectTemplate from "../components/main/popups/SelectTemplate.svelte"
+import SmartPlaylist from "../components/main/popups/SmartPlaylist.svelte"
 import SetTime from "../components/main/popups/SetTime.svelte"
 import Shortcuts from "../components/main/popups/Shortcuts.svelte"
 import SlideMidi from "../components/main/popups/SlideMidi.svelte"
@@ -182,6 +183,7 @@ export const popups: { [key in Popups]: ComponentType } = {
     template_info: TemplateInfo,
     cleaning_utility: CleaningUtility,
     pco_picker: PcoServicePicker,
+    smart_playlist: SmartPlaylist,
     sync_folders: SyncFolders,
     node_options: NodeOptions,
     ai_model_manager: AiModelManager,

@@ -19,6 +19,22 @@ export interface Project {
     sectionsLocked?: boolean // if true, sections cannot be edited or removed
     sourcePath?: string // used to save directly to file import location
     origin?: string // provider origin e.g. "pco" | "churchApps"
+    smart?: SmartPlaylist // if set, project shows are kept in sync with these rules
+}
+
+export type SmartRuleField = "name" | "category" | "tag" | "created" | "modified" | "used"
+export type SmartRuleOperator = "contains" | "not_contains" | "is" | "is_not" | "within_days" | "older_than_days" | "never"
+export interface SmartRule {
+    field: SmartRuleField
+    operator: SmartRuleOperator
+    value: string | number
+}
+export interface SmartPlaylist {
+    match: "all" | "any"
+    rules: SmartRule[]
+    sortBy: "name" | "created" | "modified" | "used"
+    sortDescending?: boolean
+    limit?: number // 0 or undefined = no limit
 }
 
 export interface ProjectShowRef extends ShowRef {

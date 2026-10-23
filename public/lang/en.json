@@ -580,7 +580,8 @@
         "quit": "Quit without saving",
         "save_quit": "Save & Quit",
         "ai_model_manager": "Manage models",
-        "ai_chat": "Chat"
+        "ai_chat": "Chat",
+        "smart_playlist": "Smart playlist"
     },
     "confirm": {
         "statement_slide_exists_arrangement": "Slide exists in a different arrangement!",
@@ -1849,5 +1850,35 @@
         "confidence_highest": "If confident",
         "confidence_high": "If high confidence",
         "confidence_medium": "If medium confidence"
+    },
+    "smart_playlist": {
+        "new": "Smart playlist",
+        "edit_rules": "Smart playlist rules",
+        "match": "Match",
+        "match_all": "All rules",
+        "match_any": "Any rule",
+        "field": "Field",
+        "operator": "Condition",
+        "value": "Value",
+        "days": "Days",
+        "field_name": "Name",
+        "field_category": "Category",
+        "field_tag": "Tag",
+        "field_created": "Date created",
+        "field_modified": "Date modified",
+        "field_used": "Last used",
+        "op_contains": "Contains",
+        "op_not_contains": "Does not contain",
+        "op_is": "Is",
+        "op_is_not": "Is not",
+        "op_within_days": "In the last",
+        "op_older_than_days": "Not in the last",
+        "op_never": "Never",
+        "add_rule": "Add rule",
+        "descending": "Descending",
+        "limit": "Limit number of shows",
+        "matches": "Matching shows",
+        "convert_to_normal": "Convert to normal project",
+        "tooltip": "Shows are added and removed automatically based on rules"
     }
 }

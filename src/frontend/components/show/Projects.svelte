@@ -7,6 +7,7 @@
     import { activePopup, activeProject, activeRename, contentProviderData, dictionary, drawer, editingProjectTemplate, focusMode, folders, openedFolders, projects, projectTemplates, projectView, providerConnections, showRecentlyUsedProjects, sorted, special } from "../../stores"
     import { translateText } from "../../utils/language"
     import { getAccess } from "../../utils/profile"
+    import { getDefaultSmartPlaylist } from "../../utils/smartPlaylists"
     import { exportProject } from "../export/project"
     import { shareProjectLink } from "../export/projectLink"
     import { clone, keysToID, removeDuplicateValues, sortByName } from "../helpers/array"
@@ -99,6 +100,20 @@
         let parent = interactedFolder || ($folders[currentProject?.parent || ""] ? currentProject?.parent || "/" : "/")
         if (profile[parent] === "none" || tree.find((a) => a.id === parent)?.readOnly) parent = "/"
         history({ id: "UPDATE", newData: { replace: { parent } }, location: { page: "show", id: `project${folder ? "_folder" : ""}` } })
+    }
+
+    function createSmartProject() {
+        createProject()
+
+        // history selects the newly created project
+        const projectId = $activeProject
+        if (!projectId || !$projects[projectId]) return
+
+        projects.update((a) => {
+            a[projectId].smart = getDefaultSmartPlaylist()
+            return a
+        })
+        activePopup.set("smart_playlist")
     }
 
     function createProjectTemplate() {
@@ -422,6 +437,10 @@
                                         </MaterialButton>
                                     {/if}
 
+                                    <MaterialButton title="smart_playlist.tooltip" icon="stars" on:click={() => activePopup.set("smart_playlist")} white>
+                                        {translateText(currentProject.smart ? "smart_playlist.edit_rules" : "smart_playlist.new", $dictionary)}
+                                    </MaterialButton>
+
                                     <!-- export -->
                                     <!-- WIP set sourcePath to export path -->
                                     <MaterialButton title="actions.export" icon="export" on:click={() => exportProject(currentProject, $activeProject || "")} white>
@@ -546,6 +565,10 @@
                 <div class="addMenu" transition:fade={{ duration: 80 }} role="none" on:click={() => (addMenuOpen = false)}>
                     <MaterialButton variant="outlined" icon="project" title="<b>new.project</b><br>tooltip.project" on:click={() => createProject()}>
                         <T id="formats.project" />
+                    </MaterialButton>
+
+                    <MaterialButton variant="outlined" icon="stars" title="smart_playlist.tooltip" on:click={createSmartProject} white>
+                        {translateText("smart_playlist.new", $dictionary)}
                     </MaterialButton>
 
                     <MaterialButton variant="outlined" icon="folder" title="new.folder" on:click={() => createProject(true)} white>

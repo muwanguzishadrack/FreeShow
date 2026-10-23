@@ -482,6 +482,7 @@ export type Popups =
     | "template_info"
     | "cleaning_utility"
     | "pco_picker"
+    | "smart_playlist"
     | "sync_folders"
     | "node_options"
     | "ai_model_manager"

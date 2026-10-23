@@ -173,7 +173,7 @@
                                         </MaterialButton>
                                     {:else if project.id && shown && isArchivedShown}
                                         <MaterialButton style="width: 100%;padding: 0.08rem 0.65rem;font-weight: normal;" title="actions.id_select_project: <b>{project.name}</b>" on:click={(e) => open(e, project.id)} class="context #project_button{isReadOnly ? '_readonly' : ''}" isActive={$activeProject === project.id} tab>
-                                            <Icon id={isProjectLinked($projects[project.id], project.id, $contentProviderData) ? "cloud" : "project"} white={$projects[project.id]?.archived} />
+                                            <Icon id={isProjectLinked($projects[project.id], project.id, $contentProviderData) ? "cloud" : $projects[project.id]?.smart ? "stars" : "project"} white={$projects[project.id]?.archived} />
                                             <HiddenInput value={project.name} id={"project_" + project.id} on:edit={(e) => rename(project.id, e.detail.value)} bind:edit={editActive} allowEdit={!isReadOnly} />
                                         </MaterialButton>
                                     {/if}
