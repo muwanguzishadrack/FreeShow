@@ -19,6 +19,7 @@
     import MaterialButton from "../inputs/MaterialButton.svelte"
     import MaterialZoom from "../inputs/MaterialZoom.svelte"
     import SelectElem from "../system/SelectElem.svelte"
+    import ProSlideBar from "./ProSlideBar.svelte"
     import Reference from "./Reference.svelte"
 
     $: showId = $activeShow?.id || ""
@@ -110,9 +111,18 @@
     $: isLocked = currentShow?.locked || profile.global === "read" || profile[currentShow?.category || ""] === "read"
 
     $: referenceType = currentShow?.reference?.type
+
+    // ProPresenter layout: a fixed bar under the slides replaces the floating buttons (not for scripture/lessons)
+    $: proSlideBar = $special.proLayout !== false && !reference && !!layoutSlides.length
+    function newArrangement() {
+        addLayout({ detail: { ctrl: false } } as ClickEvent)
+    }
+    $: canAddArrangement = !!layoutSlides.length && !isLocked && layoutSlides.some((a) => a && currentShow?.slides?.[a.id]?.group && currentShow?.slides?.[a.id]?.group !== ".")
 </script>
 
-{#if referenceType === "lessons"}
+{#if proSlideBar}
+    <ProSlideBar {isLocked} {canAddArrangement} {totalTime} on:newArrangement={newArrangement} />
+{:else if referenceType === "lessons"}
     <MaterialZoom hidden columns={$slidesOptions.columns} on:change={(e) => slidesOptions.set({ ...$slidesOptions, columns: e.detail })} />
 {:else if layoutSlides.length}
     <FloatingInputs arrow={!isLocked} let:open>
@@ -175,7 +185,7 @@
     </FloatingInputs>
 {/if}
 
-{#if $slidesOptions.mode !== "simple"}
+{#if $slidesOptions.mode !== "simple" && !proSlideBar}
     <FloatingInputs style="max-width: {referenceType ? 90 : 70}%;" side="left" onlyOne={!reference && !multipleLayouts}>
         {#if reference}
             <Reference {showId} show={currentShow} />

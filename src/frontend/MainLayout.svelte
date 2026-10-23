@@ -14,6 +14,8 @@
     import Show from "./components/show/Show.svelte"
     import ShowTools from "./components/show/ShowTools.svelte"
     import ProTools from "./components/show/ProTools.svelte"
+    import ProBible from "./components/show/ProBible.svelte"
+    import { proCenterView } from "./components/show/proToolsState"
     import ProOutputBar from "./components/output/preview/ProOutputBar.svelte"
     import StageLayouts from "./components/stage/StageLayouts.svelte"
     import Resizeable from "./components/system/Resizeable.svelte"
@@ -69,6 +71,8 @@
                 {#if page === "show"}
                     {#if $focusMode}
                         <LazyLoad component={() => import("./components/show/focus/FocusMode.svelte")} show={$focusMode} />
+                    {:else if proLayout && $proCenterView === "bible"}
+                        <ProBible />
                     {:else}
                         <Show />
                     {/if}

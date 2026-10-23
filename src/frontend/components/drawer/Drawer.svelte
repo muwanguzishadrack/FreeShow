@@ -24,6 +24,7 @@
     import MaterialButton from "../inputs/MaterialButton.svelte"
     import Resizeable from "../system/Resizeable.svelte"
     import Info from "./info/Info.svelte"
+    import ProBinHeader from "./ProBinHeader.svelte"
 
     const minHeight = 40
     const topHeight = 40
@@ -273,7 +274,10 @@
     >
         <!-- role="button"
         tabindex="0" -->
-        <span class="tabs">
+        {#if proLayout}
+            <ProBinHeader />
+        {/if}
+        <span class="tabs" class:hidden={proLayout}>
             {#each tabs as tab, i}
                 {#if $drawerTabsData[tab.id]?.enabled !== false && getAccess(tab.id).global !== "none" && (!$focusMode || !hiddenInFocusMode.includes(tab.id))}
                     <!-- overflow: unset; -->
@@ -369,6 +373,9 @@
         display: flex;
         overflow-x: auto;
         overflow-y: hidden;
+    }
+    .top .tabs.hidden {
+        display: none;
     }
 
     .search {

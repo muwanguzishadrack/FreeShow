@@ -19,28 +19,24 @@
         macros: { name: "pro_layout.macros", icon: "functions" }
     }
 
-    // remember the selected tab while switching pages
-    let active = $proToolsTab
-    $: proToolsTab.set(active)
-
     $: showIsActive = !!$activeShow && ($activeShow.type || "show") === "show" && !!$showsCache[$activeShow.id]
 </script>
 
 <div class="main border">
-    <Tabs {tabs} bind:active labels={false} />
+    <Tabs {tabs} bind:active={$proToolsTab} labels={false} />
 
     <div class="content">
-        {#if active === "groups"}
+        {#if $proToolsTab === "groups"}
             {#if showIsActive}
                 <SlideGroups />
             {/if}
-        {:else if active === "audio"}
+        {:else if $proToolsTab === "audio"}
             <Audio active="all" />
-        {:else if active === "props"}
+        {:else if $proToolsTab === "props"}
             <Overlays active="all" />
-        {:else if active === "timers"}
+        {:else if $proToolsTab === "timers"}
             <Timers searchValue="" />
-        {:else if active === "macros"}
+        {:else if $proToolsTab === "macros"}
             <Actions searchValue="" />
         {/if}
     </div>

@@ -2,10 +2,9 @@
 // Key choices come from ProPresenter 21.2's own menus (MainMenu.nib and the live menu bar).
 
 import { get } from "svelte/store"
-import type { DrawerTabIds } from "../../types/Tabs"
 import { clearToLogo } from "../components/output/proOutputControls"
-import { activeDrawerTab, activeEdit, activePage, activeShow, drawer, editMode, os, special } from "../stores"
-import { DEFAULT_DRAWER_HEIGHT } from "./common"
+import { activePage, os, special } from "../stores"
+import { openEditor, openTool, showSlides, toggleBible, toggleBin } from "./proActions"
 import { previewShortcuts } from "./shortcuts"
 
 const isProLayout = () => get(special).proLayout !== false
@@ -30,31 +29,18 @@ export function getPreviewShortcut(key: string): ((e: any) => any) | undefined {
 
 // View shortcuts (macOS only: Control+letter, so Windows copy/paste keys are untouched)
 
-function openDrawer(tab: DrawerTabIds) {
-    if (get(activePage) !== "show" && get(activePage) !== "edit") activePage.set("show")
-    activeDrawerTab.set(tab)
-    if (get(drawer).height <= 40) drawer.set({ height: get(drawer).stored ?? DEFAULT_DRAWER_HEIGHT, stored: null })
-}
-
-function openEditor(mode: "default" | "text_edit") {
-    const show = get(activeShow)
-    if (!show || (show.type || "show") !== "show") return
-    editMode.set(mode)
-    activePage.set("edit")
-    activeEdit.set({ slide: get(activeEdit).slide || 0, items: [], showId: show.id })
-}
-
 const controlKeys: { [code: string]: () => void } = {
-    KeyS: () => activePage.set("show"),
+    KeyS: () => showSlides(),
     KeyE: () => openEditor("default"),
     KeyR: () => openEditor("text_edit"),
-    KeyB: () => openDrawer("scripture"),
-    KeyV: () => openDrawer("media"),
-    KeyA: () => openDrawer("audio"),
-    KeyP: () => openDrawer("overlays")
+    KeyB: () => toggleBible(),
+    KeyV: () => toggleBin("media"),
+    KeyA: () => openTool("audio"),
+    KeyP: () => openTool("props"),
+    KeyC: () => openTool("timers")
 }
 const controlShiftKeys: { [code: string]: () => void } = {
-    KeyM: () => openDrawer("functions")
+    KeyM: () => openTool("macros")
 }
 
 // returns true when the key was handled
