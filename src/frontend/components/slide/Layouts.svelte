@@ -2,7 +2,7 @@
     import { uid } from "uid"
     import type { ClickEvent } from "../../../types/Main"
     import { changeSlidesView } from "../../show/slides"
-    import { actions, activePopup, activeProject, activeShow, alertMessage, editingProjectTemplate, labelsDisabled, projects, projectTemplates, showsCache, slidesOptions } from "../../stores"
+    import { actions, activePopup, activeProject, activeShow, alertMessage, editingProjectTemplate, labelsDisabled, projects, projectTemplates, showsCache, slidesOptions, special } from "../../stores"
     import { translateText } from "../../utils/language"
     import { getAccess } from "../../utils/profile"
     import { getActionIcon, runAction } from "../actions/actions"
@@ -10,6 +10,7 @@
     import T from "../helpers/T.svelte"
     import { keysToID, sortByName } from "../helpers/array"
     import { duplicate } from "../helpers/clipboard"
+    import { setShowLayout } from "../helpers/arrangement"
     import { history } from "../helpers/history"
     import { _show } from "../helpers/shows"
     import { joinTime, secondsToTime } from "../helpers/time"
@@ -84,35 +85,15 @@
         }
     }
 
-    function setLayout(id: string, layoutInfo) {
-        if (!$showsCache[showId]) return
-
-        showsCache.update((a) => {
-            if (a[showId]) {
-                if (!a[showId].settings) a[showId].settings = { activeLayout: "", template: null }
-                a[showId].settings.activeLayout = id
-            }
-            return a
-        })
-
-        // set active layout in project
-        if (sortedLayouts?.length < 2) return
-        const showIndex = $activeShow?.index
-        if (($activeShow?.type === undefined || $activeShow?.type === "show") && showIndex !== undefined && projectId && project?.shows?.[showIndex]) {
-            store.update((a) => {
-                if (a[projectId!]?.shows?.[showIndex]) {
-                    a[projectId!].shows[showIndex].layout = id
-                    a[projectId!].shows[showIndex].layoutInfo = layoutInfo
-                }
-                return a
-            })
-        }
+    function setLayout(id: string, layoutInfo: { name: string }) {
+        setShowLayout(showId, id, layoutInfo)
     }
 
     let edit: string | boolean = false
 
     $: reference = currentShow.reference
-    $: multipleLayouts = sortedLayouts.length > 1
+    // in the ProPresenter layout the arrangement is picked in the show header instead
+    $: multipleLayouts = sortedLayouts.length > 1 && $special.proLayout === false
 
     $: customActionId = currentShow?.settings?.customAction
     $: customAction = customActionId && $actions[customActionId] ? customActionId : ""

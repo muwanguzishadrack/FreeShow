@@ -139,6 +139,9 @@
     // updater
     $: if (bgPath) mediaStyle = getMediaStyle($media[bgPath], currentStyle)
 
+    // ProPresenter layout: label bar filled with the group colour
+    $: labelColors = $fullColors || $special.proLayout !== false
+
     $: group = slide.group
     $: if (slide.globalGroup && $groups[slide.globalGroup]) {
         group = slide.globalGroup === "none" ? "." : $groups[slide.globalGroup].default ? translateText(`groups.${$groups[slide.globalGroup].name}`) : $groups[slide.globalGroup].name
@@ -421,10 +424,10 @@
                     <div data-title={name || ""} style="height: 2px;background-color: {color};" />
                 {:else if viewMode !== "lyrics" || noQuickEdit}
                     <!-- style="width: {resolution.width * zoom}px;" -->
-                    <div class="label" data-title={removeTagsAndContent(name || "")} style={$fullColors ? `background-color: ${color};color: ${getContrast(color || "")};` : `border-bottom: 2px solid ${color || "var(--primary-darkest)"};`}>
-                        {#if name === null && $fullColors && $activePage === "show"}
+                    <div class="label" class:proLabel={$special.proLayout !== false} data-title={removeTagsAndContent(name || "")} style={labelColors ? (color ? `background-color: ${color};color: ${getContrast(color)};` : "") : `border-bottom: 2px solid ${color || "var(--primary-darkest)"};`}>
+                        {#if name === null && labelColors && $activePage === "show"}
                             <!-- WIP this works fine without full colors, but is it neccesary? (UI vs UX) -->
-                            <div class="childLink" style="background-color: {color};" class:full={$fullColors} />
+                            <div class="childLink" style="background-color: {color};" class:full={labelColors} />
                         {/if}
                         {#if output?.maxLines}
                             <div class="lineProgress">
@@ -445,7 +448,7 @@
 
                         <!-- <div class="label" title={name || ""} style="border-bottom: 2px solid {color};"> -->
                         <!-- font-size: 0.8em; -->
-                        <span style="color: {$fullColors ? getContrast(color || '') : 'var(--text)'};opacity: 0.85;font-size: 0.9em;">{index + 1}</span>
+                        <span style="color: {labelColors && color ? getContrast(color) : 'var(--text)'};opacity: 0.85;font-size: 0.9em;">{index + 1}</span>
                         <span class="text" style={name === null || name === "." ? "opacity: 0;" : ""}>{@html name === null || name === "." ? "-" : name || "—"}</span>
 
                         <!-- group is locked! -->
@@ -613,6 +616,15 @@
 
         /* border-bottom-left-radius: 4px;
         border-bottom-right-radius: 4px; */
+    }
+
+    /* ProPresenter layout: "2  Verse 1" left aligned */
+    .label.proLabel {
+        gap: 8px;
+    }
+    .label.proLabel .text {
+        flex: 1;
+        justify-content: flex-start !important;
     }
 
     .label .text {

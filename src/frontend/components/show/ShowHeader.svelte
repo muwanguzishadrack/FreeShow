@@ -9,6 +9,7 @@
     import { removeTemplatesFromShow } from "../helpers/show"
     import T from "../helpers/T.svelte"
     import MaterialButton from "../inputs/MaterialButton.svelte"
+    import ArrangementPicker from "./ArrangementPicker.svelte"
 
     export let showId: string
     export let hideOptions = false
@@ -102,6 +103,10 @@
     </div>
 
     <div class="right">
+        {#if $special.proLayout !== false && !hideOptions}
+            <ArrangementPicker {showId} />
+        {/if}
+
         <!-- template icon -->
         {#if enableStylePreview}
             <MaterialButton style="width: 32px;height: 100%;padding: 0.3em 0.5em;" title="formats.template: <b>{$templates[outputStyleTemplate]?.name || ''}</b>" on:click={() => activePopup.set("template_info")}>

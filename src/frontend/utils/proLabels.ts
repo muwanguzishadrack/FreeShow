@@ -10,8 +10,9 @@ export const PRO_LABELS: { [section: string]: { [key: string]: string } } = {
     new: { project: "New playlist", show: "New presentation" },
     tabs: { shows: "Presentations", overlays: "Props", templates: "Themes", functions: "Macros" },
     preview: { overlays: "Props" },
+    popup: { show: "New presentation" },
     empty: { project_select: "Select a playlist", layout: "No arrangement selected", layouts: "No arrangements" },
-    show: { new_layout: "New arrangement" },
+    show: { new_layout: "New arrangement", lyrics: "Easy View" },
     context: { addToProject: "Add to playlist" },
     export: { current_project: "Current playlist", all_projects: "All playlists", project: "Playlist" },
     actions: {
