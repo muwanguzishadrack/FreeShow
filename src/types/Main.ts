@@ -483,6 +483,7 @@ export type Popups =
     | "cleaning_utility"
     | "pco_picker"
     | "smart_playlist"
+    | "audience_looks"
     | "sync_folders"
     | "node_options"
     | "ai_model_manager"

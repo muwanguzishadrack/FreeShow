@@ -9,6 +9,7 @@ export interface Output {
     id?: string
     hideFromPreview?: boolean
     slideStageOnly?: boolean // ProPresenter layout "Stage Only": hide the slide layer here, stage screens still show it
+    proLook?: OutputLook // active Audience Look for this screen
     stageOutput?: string
     enabled: boolean
     active: boolean
@@ -93,4 +94,12 @@ export interface AnimationAction {
     extension?: string
     value?: number
     duration: number
+}
+
+// Audience Look applied to one output (see frontend/utils/audienceLooks.ts)
+export interface OutputLook {
+    id: string
+    style?: string
+    layers?: string[]
+    hiddenProps?: string[]
 }

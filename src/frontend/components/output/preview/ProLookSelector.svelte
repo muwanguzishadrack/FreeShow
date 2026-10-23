@@ -1,40 +1,37 @@
 <script lang="ts">
-    // ProPresenter-style "Look" selector under the preview.
-    // For now a look is an output style applied to all audience screens (stage screens are left alone).
-    import { dictionary, outputs, styles } from "../../../stores"
+    // ProPresenter-style "Look" selector under the preview: switch Audience Looks, or open the look editor.
+    import { activePopup, dictionary, special } from "../../../stores"
     import { translateText } from "../../../utils/language"
     import Dropdown from "../../inputs/Dropdown.svelte"
+    import { activateLook } from "../proLooks"
 
-    $: audienceOutputs = Object.entries($outputs).filter(([, a]) => a.enabled && !a.stageOutput)
-    $: currentStyleId = audienceOutputs[0]?.[1]?.style || ""
-    $: mixed = audienceOutputs.some(([, a]) => (a.style || "") !== currentStyleId)
+    const EDIT = "__edit_looks"
+
+    $: looks = ($special.proLooks || {}) as { [id: string]: { name: string } }
+    $: activeId = $special.proActiveLook && looks[$special.proActiveLook] ? $special.proActiveLook : ""
 
     $: options = [
         { id: "", name: translateText("pro_layout.look_default", $dictionary) },
-        ...Object.entries($styles)
-            .map(([id, a]) => ({ id, name: a.name || id }))
-            .sort((a, b) => a.name.localeCompare(b.name))
+        ...Object.entries(looks)
+            .map(([id, a]) => ({ id, name: a.name || translateText("main.unnamed", $dictionary) }))
+            .sort((a, b) => a.name.localeCompare(b.name)),
+        { id: EDIT, name: translateText("pro_layout.edit_looks", $dictionary) }
     ]
-    $: value = mixed ? translateText("pro_layout.look_mixed", $dictionary) : options.find((a) => a.id === currentStyleId)?.name || options[0].name
+    $: value = options.find((a) => a.id === activeId)?.name || options[0].name
 
-    function setLook(styleId: string) {
-        outputs.update((a) => {
-            audienceOutputs.forEach(([id]) => {
-                if (!a[id]) return
-                if (styleId) a[id].style = styleId
-                else delete a[id].style
-            })
-            return a
-        })
+    function select(id: string) {
+        if (id === EDIT) {
+            activePopup.set("audience_looks")
+            return
+        }
+        activateLook(id || null)
     }
 </script>
 
-{#if audienceOutputs.length}
-    <div class="look" data-title={translateText("pro_layout.look_tip", $dictionary)}>
-        <span class="label">{translateText("pro_layout.look", $dictionary)}</span>
-        <Dropdown style="flex: 1;" activeId={mixed ? "" : currentStyleId} {value} {options} on:click={(e) => setLook(e.detail.id)} />
-    </div>
-{/if}
+<div class="look" data-title={translateText("pro_layout.look_tip", $dictionary)}>
+    <span class="label">{translateText("pro_layout.look", $dictionary)}</span>
+    <Dropdown style="flex: 1;" {activeId} {value} {options} on:click={(e) => select(e.detail.id)} />
+</div>
 
 <style>
     .look {

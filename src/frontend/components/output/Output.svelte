@@ -12,6 +12,7 @@
     import Draw from "../draw/Draw.svelte"
     import { clone } from "../helpers/array"
     import { defaultLayers, getCurrentStyle, getMetadata, getOutputLines, getOutputTransitions, getResolution, getSlideFilter, getStyleTemplate, setTemplateStyle } from "../helpers/output"
+    import { filterLookProps, getLookLayers } from "../../utils/audienceLooks"
     import { _show } from "../helpers/shows"
     import Image from "../media/Image.svelte"
     import Zoomed from "../slide/Zoomed.svelte"
@@ -35,7 +36,8 @@
 
     $: currentOutput = $outputs[outputId] || $allOutputs[outputId] || {}
 
-    $: styleId = styleIdOverride || sceneStyleId || currentOutput?.style
+    // an active Audience Look can use its own style for this screen
+    $: styleId = styleIdOverride || sceneStyleId || (currentOutput?.stageOutput ? "" : currentOutput?.proLook?.style) || currentOutput?.style
 
     // output styling
     $: currentStyling = getCurrentStyle($styles, styleId)
@@ -72,10 +74,11 @@
     let cachedLayersStr = ""
     $: if (currentOutput) {
         const stageOnly = !!currentOutput.slideStageOnly && !currentOutput.stageOutput
-        const newLayersStr = JSON.stringify([currentStyle.layers || defaultLayers, stageOnly])
+        const lookLayers = currentOutput.stageOutput ? null : currentOutput.proLook?.layers || null
+        const newLayersStr = JSON.stringify([currentStyle.layers || defaultLayers, stageOnly, lookLayers])
         if (newLayersStr !== cachedLayersStr) {
             cachedLayersStr = newLayersStr
-            layers = clone(Array.isArray(currentStyle.layers) ? currentStyle.layers : defaultLayers)
+            layers = clone(getLookLayers(currentOutput, Array.isArray(currentStyle.layers) ? currentStyle.layers : defaultLayers))
             if (!Array.isArray(layers)) layers = []
             if (stageOnly) layers = layers.filter((layer) => layer !== "slide")
         }
@@ -163,7 +166,7 @@
     $: sceneHideLayers = styleIdOverride ? false : scene !== null && !sceneStyleId
 
     // overlays
-    $: outputtedOverlayIds = sceneHideLayers ? [] : out.overlays || []
+    $: outputtedOverlayIds = sceneHideLayers ? [] : filterLookProps(currentOutput, out.overlays || [])
     $: overlayIds = [...new Set([...sceneOverlays, ...(layers.includes("overlays") ? outputtedOverlayIds : [])])]
     let storedOverlayIds = ""
     let storedOverlays = ""

@@ -582,7 +582,8 @@
         "save_quit": "Save & Quit",
         "ai_model_manager": "Manage models",
         "ai_chat": "Chat",
-        "smart_playlist": "Smart playlist"
+        "smart_playlist": "Smart playlist",
+        "audience_looks": "Audience Looks"
     },
     "confirm": {
         "statement_slide_exists_arrangement": "Slide exists in a different arrangement!",
@@ -1930,9 +1931,20 @@
         "new_library": "New library",
         "look": "Look",
         "look_default": "Default",
-        "look_mixed": "Mixed",
-        "look_tip": "Output style used on all audience screens",
+        "look_tip": "Audience Look: what each audience screen shows",
         "more": "More",
-        "stage_editor": "Stage Editor"
+        "stage_editor": "Stage Editor",
+        "edit_looks": "Edit Looks…",
+        "new_look": "New look",
+        "look_name": "Look name",
+        "look_activate": "Use this look now",
+        "look_live": "LIVE",
+        "look_use_screen": "Use on this screen",
+        "look_style": "Style (theme)",
+        "look_screen_style": "Screen's own style",
+        "look_layers": "Show layers",
+        "look_props": "Props shown on this screen",
+        "look_no_screens": "No audience screens are set up yet. Add one in Settings > Outputs.",
+        "look_none": "Create a look to choose what each audience screen shows."
     }
 }
