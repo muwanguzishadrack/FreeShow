@@ -19,6 +19,7 @@
     import Center from "../../system/Center.svelte"
     import VirtualList from "../VirtualList.svelte"
     import MediaTableRow from "./MediaTableRow.svelte"
+    import ProMediaBar from "./ProMediaBar.svelte"
     import BMDStreams from "../live/BMDStreams.svelte"
     import Cameras from "../live/Cameras.svelte"
     import NDIStreams from "../live/NDIStreams.svelte"
@@ -697,6 +698,9 @@
     <!-- nothing -->
 
     <MaterialZoom hidden columns={$mediaOptions.columns} defaultValue={5} on:change={(e) => mediaOptions.set({ ...$mediaOptions, columns: e.detail })} />
+{:else if $special.proLayout !== false}
+    <!-- ProPresenter layout: fixed bar at the bottom of the bin -->
+    <ProMediaBar canGoBack={active !== "all" && active !== "favourites" && rootPath !== path} {folderName} {fileCount} on:back={goBack} />
 {:else}
     {#if active !== "all" && active !== "favourites"}
         {#if rootPath !== path}

@@ -65,19 +65,24 @@
         { id: "stage", icon: "stage", label: "pro_layout.stage", active: $activePage === "stage", action: () => activePage.set("stage") }
     ] as ToolbarItem[]
 
-    $: groups = [left, modes, panels]
+    // like ProPresenter: tools and modes on the left, panel buttons on the right
+    $: clusters = [[left, modes], [panels]]
 </script>
 
 <div class="toolbar">
-    {#each groups as group, i}
-        {#if i > 0}<div class="divider" />{/if}
+    {#each clusters as groups}
+        <div class="cluster">
+            {#each groups as group, i}
+                {#if i > 0}<div class="divider" />{/if}
 
-        <div class="group">
-            {#each group as item}
-                <button class="item {item.id}" class:active={item.active} disabled={item.disabled} data-title={translateText(item.label, $dictionary)} on:click={item.action}>
-                    <span class="pill"><Icon id={item.icon} size={1.15} white /></span>
-                    <span class="label">{translateText(item.label, $dictionary)}</span>
-                </button>
+                <div class="group">
+                    {#each group as item}
+                        <button class="item {item.id}" class:active={item.active} disabled={item.disabled} data-title={translateText(item.label, $dictionary)} on:click={item.action}>
+                            <span class="pill"><Icon id={item.icon} size={1.15} white /></span>
+                            <span class="label">{translateText(item.label, $dictionary)}</span>
+                        </button>
+                    {/each}
+                </div>
             {/each}
         </div>
     {/each}
@@ -109,7 +114,16 @@
         position: relative;
         display: flex;
         align-items: center;
+        justify-content: space-between;
+        width: 100%;
         height: 100%;
+        gap: 6px;
+        padding: 0 12px;
+    }
+
+    .cluster {
+        display: flex;
+        align-items: center;
         gap: 6px;
     }
 

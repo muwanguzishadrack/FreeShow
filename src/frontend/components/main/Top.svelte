@@ -109,7 +109,7 @@
             <h1 style="color: var(--text);font-size: 1.7em;">FreeShow</h1>
         </div> -->
     </span>
-    <span>
+    <span class:proToolbar={proLayout}>
         {#if proLayout}
             <ProToolbar {editDisabled} />
         {:else}
@@ -180,6 +180,11 @@
     }
     .top span {
         display: flex;
+    }
+
+    .top span.proToolbar {
+        flex: 1;
+        min-width: 0;
     }
 
     .top.proLayout {
