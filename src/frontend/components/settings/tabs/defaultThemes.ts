@@ -1,6 +1,28 @@
 import type { Themes } from "../../../../types/Settings"
 
 export const defaultThemes: { [key: string]: Themes } = {
+    // neutral greys and a single blue accent, for the ProPresenter-style layout
+    classic: {
+        name: "classic",
+        default: true,
+        font: {
+            family: "",
+            size: "1em"
+        },
+        colors: {
+            primary: "#262626",
+            "primary-lighter": "#383838",
+            "primary-darker": "#1c1c1c",
+            "primary-darkest": "#121212",
+            text: "#ebebeb",
+            textInvert: "#131313",
+            "secondary-text": "#ffffff",
+            secondary: "#3d8bfd",
+            "secondary-opacity": "rgb(61 139 253 / 0.5)",
+            hover: "rgb(255 255 255 / 0.06)",
+            focus: "rgb(255 255 255 / 0.12)"
+        }
+    },
     default: {
         name: "default",
         default: true,

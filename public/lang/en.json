@@ -392,7 +392,8 @@
         "dark": "Dark",
         "light": "Light",
         "white": "White",
-        "black": "Black"
+        "black": "Black",
+        "classic": "Classic"
     },
     "theme": {
         "primary": "Primary",
@@ -1913,6 +1914,14 @@
         "stage_only_tip": "Hide slides on audience screens; stage screens still show them",
         "advance": "Advance",
         "advance_tip": "Let slide timers advance automatically",
-        "logo": "Logo for Clear To Logo"
+        "logo": "Logo for Clear To Logo",
+        "column_name": "Name",
+        "column_type": "Type",
+        "column_format": "Format",
+        "type_image": "Image",
+        "type_video": "Video",
+        "type_audio": "Audio",
+        "type_pdf": "PDF",
+        "type_ppt": "PowerPoint"
     }
 }

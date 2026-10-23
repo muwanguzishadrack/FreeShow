@@ -60,7 +60,7 @@ export const defaultSettings: { [key in SaveListSettings]: any } = {
     lockedOverlays: {},
     activeScenes: {},
     splitLines: 0,
-    theme: "default",
+    theme: "classic", // ProPresenter-style layout default (was "default")
     transitionData: {
         text: { type: "fade", duration: 500, easing: "sine" },
         media: { type: "fade", duration: 800, easing: "sine" }

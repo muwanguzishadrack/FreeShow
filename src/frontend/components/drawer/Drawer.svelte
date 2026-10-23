@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onDestroy } from "svelte"
     import type { DrawerTabIds } from "../../../types/Tabs"
-    import { activeDrawerTab, activeEdit, activePage, activePopup, activeProject, activeShow, activeTriggerFunction, dictionary, drawer, drawerOpenedInEdit, drawerTabsData, focusMode, labelsDisabled, mediaOptions, os, previousShow, projects, quickTextCache, scriptureSettings, selected, showsCache } from "../../stores"
+    import { activeDrawerTab, activeEdit, activePage, activePopup, activeProject, activeShow, activeTriggerFunction, dictionary, drawer, drawerOpenedInEdit, drawerTabsData, focusMode, labelsDisabled, mediaOptions, os, previousShow, projects, quickTextCache, scriptureSettings, selected, showsCache, special } from "../../stores"
     import { DEFAULT_DRAWER_HEIGHT, DEFAULT_WIDTH, MENU_BAR_HEIGHT } from "../../utils/common"
     import { startResizing, stopResizing } from "../../utils/cursor"
     import { translateText } from "../../utils/language"
@@ -174,7 +174,7 @@
             // (not really needed as we have Quick search)
             const isClosed = $drawer.height <= minHeight
             const mediaTab = ["media", "audio"].includes($activeDrawerTab)
-            if (isClosed && mediaTab) {
+            if (isClosed && mediaTab && !proLayout) {
                 activeDrawerTab.set("shows")
                 drawerTabsData.update((a) => {
                     a.shows.activeSubTab = "all"
@@ -235,7 +235,10 @@
 
     $: if ($activeShow?.type === undefined || $activeShow?.type === "show") previousShow.set(JSON.stringify($activeShow))
 
-    $: tabs = keysToID(drawerTabs)
+    // ProPresenter layout: presentations live in the left sidebar, so the bin starts at Media
+    $: proLayout = $special.proLayout !== false
+    $: tabs = keysToID(drawerTabs).filter((tab) => !proLayout || tab.id !== "shows")
+    $: if (proLayout && $activeDrawerTab === "shows") activeDrawerTab.set("media")
 
     let searchActive = false
     $: if (searchActive) {

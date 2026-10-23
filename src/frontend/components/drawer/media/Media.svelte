@@ -18,6 +18,7 @@
     import { clearBackground, clearSlide } from "../../output/clear"
     import Center from "../../system/Center.svelte"
     import VirtualList from "../VirtualList.svelte"
+    import MediaTableRow from "./MediaTableRow.svelte"
     import BMDStreams from "../live/BMDStreams.svelte"
     import Cameras from "../live/Cameras.svelte"
     import NDIStreams from "../live/NDIStreams.svelte"
@@ -612,6 +613,18 @@
                                 <Media credits={item.credits || {}} name={item.name || ""} path={item.path} thumbnailPath={item.previewUrl || item.thumbnailPath} loadFullImage={$mediaOptions.columns < 3} type={getMediaType(item.extension || getExtension(item.name))} shiftRange={mediaFilesOnly.map((a) => ({ ...a, type: getMediaType(getExtension(a.name)), name: removeExtension(a.name) }))} {active} />
                             {/if}
                         </MediaGrid>
+                    {:else if $mediaOptions.mode === "list" && $special.proLayout !== false}
+                        <!-- ProPresenter-style table view -->
+                        <MediaTableRow header />
+                        <VirtualList items={searchedFiles} let:item={file}>
+                            {#if file.isFolder}
+                                <Folder name={file.name} path={file.path} mode={$mediaOptions.mode} on:open={(e) => (path = e.detail)} />
+                            {:else}
+                                <MediaTableRow path={file.path} type={getMediaType(file.extension || getExtension(file.name))}>
+                                    <Media credits={file.credits || {}} thumbnail={false} name={file.name || ""} path={file.path} type={getMediaType(file.extension || getExtension(file.name))} shiftRange={mediaFilesOnly.map((a) => ({ ...a, type: getMediaType(getExtension(a.name)), name: removeExtension(a.name) }))} {active} />
+                                </MediaTableRow>
+                            {/if}
+                        </VirtualList>
                     {:else}
                         <VirtualList items={searchedFiles} let:item={file}>
                             {#if file.isFolder}

@@ -140,6 +140,8 @@ export const mainResponses: MainResponses = {
     [Main.EVENTS]: (a) => events.set(a),
     [Main.MEDIA]: (a) => media.set(a),
     [Main.THEMES]: (a) => {
+        // add the built-in Classic theme to existing theme lists
+        if (Object.keys(a).length && !a.classic) a.classic = clone(defaultThemes.classic)
         themes.set(Object.keys(a).length ? a : clone(defaultThemes))
 
         // update if themes are loaded after settings
